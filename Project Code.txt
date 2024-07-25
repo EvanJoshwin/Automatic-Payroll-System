@@ -1,0 +1,45 @@
+Sub GeneratePDF()
+    For n = 2 To 6
+    
+    Sheet1.Range("EmployeeID").Value = Sheet3.Cells(n, "A")
+    Sheet1.ExportAsFixedFormat xlTypePDF, "C:\Users\sharath.g\Desktop\Salary Slip\" & Sheet1.Range("EmployeeID").Value & " - " & Sheet1.Range("EmployeeName").Value & ".pdf", , , False, , , False
+    SendEmail
+    Next
+    
+    MsgBox "Salary Slip has been generated"
+    
+End Sub
+
+
+Sub SendEmail()
+
+    Dim OutApp As Outlook.Application
+    Dim OutMail As Outlook.MailItem
+    
+    Set OutApp = New Outlook.Application
+    Set OutMail = OutApp.CreateItem(olMailItem)
+    
+    
+    EmpMail = Sheet3.Range("A:A").Find(Sheet1.Range("EmployeeID"), , xlValues, xlWhole).Row
+    
+    Filename = "C:\Users\sharath.g\Desktop\Salary Slip\" & Sheet1.Range("EmployeeID").Value & " - " & Sheet1.Range("EmployeeName").Value & ".pdf"
+    
+    With OutMail
+    
+    .To = Sheet3.Range("L" & EmpMail)
+    .Subject = "Salary Slip for the month of" & Sheet1.Range("I5")
+    .Body = "Hi" & Sheet1.Range("EmployeeName") & vbCrLf & "Please find your salary slip"
+    .Attachments.Add Filename
+    .Send
+    
+    
+    
+    End With
+    
+    
+    
+    Set OutMail = Nothing
+    Set OutApp = Nothing
+    
+    
+End Sub
